@@ -9,25 +9,27 @@ from datetime import datetime, timedelta
 with open('model/arima_model.pkl', 'rb') as file:
     model_ARIMA = pickle.load(file)
 
+st.title('Aplikasi Prediksi')
 
-# Input untuk tanggal mulai dan tanggal akhir
 start_date = st.date_input('Tanggal Mulai', value=None)
 end_date = st.date_input('Tanggal Akhir', value=None)
 
-# Tombol untuk melakukan prediksi
 if st.button('Prediksi'):
     if start_date and end_date:
-        # Mengirim permintaan POST ke API Flask dengan data tanggal
-        response = requests.post(
-            'http://127.0.0.1:5000',
-            json={"start_date": start_date.isoformat(), "end_date": end_date.isoformat()}
-        )
-        
-        if response.status_code == 200:
-            result = response.json()
-            st.write('Hasil prediksi:', result.get('prediction', 'Tidak ada hasil'))
-        else:
-            st.write('Terjadi kesalahan:', response.status_code)
+        try:
+            response = requests.post(
+                'http://localhost:5000/predict',
+                json={"start_date": start_date.isoformat(), "end_date": end_date.isoformat()}
+            )
+            response.raise_for_status()  # Akan memunculkan exception untuk status kode 4xx/5xx
+            
+            if response.status_code == 200:
+                result = response.json()
+                st.write('Hasil prediksi:', result.get('prediction', 'Tidak ada hasil'))
+            else:
+                st.write('Terjadi kesalahan:', response.status_code)
+        except requests.exceptions.RequestException as e:
+            st.write('Terjadi kesalahan:', str(e))
     else:
         st.write('Silakan masukkan tanggal mulai dan tanggal akhir.')
 
