@@ -4,7 +4,7 @@ from statsmodels.tsa.arima.model import ARIMA
 import pickle
 
 # Load data
-url = 'https://drive.google.com/uc?id=1ZznG8sKL46fVAneRY7PlzPs50z75L-Ok'
+url = 'https://drive.google.com/file/d/1ZznG8sKL46fVAneRY7PlzPs50z75L-Ok/view?usp=drive_link'
 data = pd.read_csv(url)
 
 # Drop unnecessary columns
