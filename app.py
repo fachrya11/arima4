@@ -8,7 +8,6 @@ from datetime import datetime, timedelta
 with open('model/arima_model.pkl', 'rb') as file:
     model_ARIMA = pickle.load(file)
 
-@app.route('/')
 def index():
     return render_template('index.html')
 
