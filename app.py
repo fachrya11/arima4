@@ -18,7 +18,7 @@ if st.button('Prediksi'):
     if start_date and end_date:
         try:
             response = requests.post(
-                'http://127.0.0.1:5000',
+                'http://127.0.0.1:5000/predict',
                 json={"start_date": start_date.isoformat(), "end_date": end_date.isoformat()}
             )
             response.raise_for_status()  # Akan memunculkan exception untuk status kode 4xx/5xx
