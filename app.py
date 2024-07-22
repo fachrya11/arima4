@@ -9,13 +9,6 @@ from datetime import datetime, timedelta
 with open('model/arima_model.pkl', 'rb') as file:
     model_ARIMA = pickle.load(file)
 
-# Load historical stock data
-# Gantilah path ini dengan path yang sesuai dengan file data historis Anda
-historical_data_path = 'http://127.0.0.1:5000'
-historical_df = pd.read_csv(historical_data_path)
-historical_df['date'] = pd.to_datetime(historical_df['date'])
-historical_df.set_index('date', inplace=True)
-
 st.title('Aplikasi Prediksi')
 
 start_date = st.date_input('Tanggal Mulai', value=None)
@@ -54,18 +47,13 @@ if st.button('Prediksi'):
             st.write('Terjadi kesalahan:', results['error'])
         else:
             # Create DataFrame from results
-            prediction_df = pd.DataFrame(results)
-            prediction_df.set_index('date', inplace=True)
-
-            # Merge historical data with predictions for plotting
-            combined_df = pd.concat([historical_df, prediction_df], axis=1)
-            combined_df.columns = ['Historical Price', 'Predicted Price']
-
+            df = pd.DataFrame(results)
+            
             # Display results as a table
             st.write('Hasil prediksi:')
-            st.dataframe(prediction_df)
+            st.dataframe(df)  # Menampilkan DataFrame sebagai tabel
             
-            # Display combined data as a line chart
-            st.line_chart(combined_df)
+            # Optionally, show a line chart as well
+            st.line_chart(df.set_index('date'))
     else:
         st.write('Silakan masukkan tanggal mulai dan tanggal akhir.')
