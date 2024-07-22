@@ -21,7 +21,6 @@ def predict(start_date, end_date):
         num_dates = len(date_range)
 
         # Use the ARIMA model to predict the stock prices
-        # Predict should cover the range requested
         predictions_diff = model_ARIMA.predict(start=len(model_ARIMA.fittedvalues), end=len(model_ARIMA.fittedvalues) + num_dates - 1)
         predictions_diff_cumsum = predictions_diff.cumsum()
         last_value = model_ARIMA.fittedvalues[-1]
@@ -49,7 +48,12 @@ if st.button('Prediksi'):
         else:
             # Create DataFrame from results
             df = pd.DataFrame(results)
+            
+            # Display results as a table
             st.write('Hasil prediksi:')
+            st.dataframe(df)  # Menampilkan DataFrame sebagai tabel
+            
+            # Optionally, show a line chart as well
             st.line_chart(df.set_index('date'))
     else:
         st.write('Silakan masukkan tanggal mulai dan tanggal akhir.')
