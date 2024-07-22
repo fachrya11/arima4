@@ -8,6 +8,19 @@ from datetime import datetime, timedelta
 with open('model/arima_model.pkl', 'rb') as file:
     model_ARIMA = pickle.load(file)
 
+# Form input dari pengguna
+input_data = st.text_input('Masukkan data untuk prediksi:')
+
+if st.button('Prediksi'):
+    # Mengirim permintaan POST ke API Flask
+    response = requests.post('http://127.0.0.1:5000', json={"data": input_data})
+    
+    if response.status_code == 200:
+        result = response.json()
+        st.write('Hasil prediksi:', result['prediction'])
+    else:
+        st.write('Terjadi kesalahan:', response.status_code)
+
 def index():
     return render_template('index.html')
 
