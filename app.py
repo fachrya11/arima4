@@ -4,8 +4,6 @@ import numpy as np
 import pickle
 from datetime import datetime, timedelta
 
-app = Flask(__name__)
-
 # Load the trained ARIMA model
 with open('model/arima_model.pkl', 'rb') as file:
     model_ARIMA = pickle.load(file)
@@ -35,6 +33,3 @@ def predict():
         return jsonify(results)
     except Exception as e:
         return jsonify({'error': str(e)})
-
-if __name__ == '__main__':
-    app.run(debug=True)
