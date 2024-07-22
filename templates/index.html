@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Price Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Stock Price Prediction</h1>
+        <form id="prediction-form">
+            <label for="start_date">Start Date:</label>
+            <input type="date" id="start_date" name="start_date" required>
+            <label for="end_date">End Date:</label>
+            <input type="date" id="end_date" name="end_date" required>
+            <button type="submit">Predict</button>
+        </form>
+        <div id="result">
+            <h2>Prediction Results</h2>
+            <table id="results-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Predicted Price</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        document.getElementById('prediction-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const start_date = document.getElementById('start_date').value;
+            const end_date = document.getElementById('end_date').value;
+
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ start_date, end_date })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultsTable = document.getElementById('results-table').getElementsByTagName('tbody')[0];
+                resultsTable.innerHTML = '';
+
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                } else {
+                    data.date.forEach((date, index) => {
+                        const row = resultsTable.insertRow();
+                        row.insertCell(0).innerText = date;
+                        row.insertCell(1).innerText = data.predictions[index].toFixed(2);
+                    });
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
