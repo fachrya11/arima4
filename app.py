@@ -19,7 +19,7 @@ if st.button('Prediksi'):
     if start_date and end_date:
         # Mengirim permintaan POST ke API Flask dengan data tanggal
         response = requests.post(
-            'http://localhost:5000/predict',
+            'http://127.0.0.1:5000',
             json={"start_date": start_date.isoformat(), "end_date": end_date.isoformat()}
         )
         
