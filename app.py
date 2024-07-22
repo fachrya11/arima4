@@ -11,7 +11,6 @@ with open('model/arima_model.pkl', 'rb') as file:
 def index():
     return render_template('index.html')
 
-@app.route('/predict', methods=['POST'])
 def predict():
     try:
         data = request.get_json(force=True)
