@@ -1,42 +1,15 @@
 from flask import Flask, request, jsonify
-import pandas as pd
-import streamlit as st
-import numpy as np
 import pickle
-import requests
-from datetime import datetime, timedelta
+import pandas as pd
+from datetime import datetime
+
+app = Flask(__name__)
 
 # Load the trained ARIMA model
 with open('model/arima_model.pkl', 'rb') as file:
     model_ARIMA = pickle.load(file)
 
-st.title('Aplikasi Prediksi')
-
-start_date = st.date_input('Tanggal Mulai', value=None)
-end_date = st.date_input('Tanggal Akhir', value=None)
-
-if st.button('Prediksi'):
-    if start_date and end_date:
-        try:
-            response = requests.post(
-                'http://127.0.0.1:5000/predict',
-                json={"start_date": start_date.isoformat(), "end_date": end_date.isoformat()}
-            )
-            response.raise_for_status()  # Akan memunculkan exception untuk status kode 4xx/5xx
-            
-            if response.status_code == 200:
-                result = response.json()
-                st.write('Hasil prediksi:', result.get('prediction', 'Tidak ada hasil'))
-            else:
-                st.write('Terjadi kesalahan:', response.status_code)
-        except requests.exceptions.RequestException as e:
-            st.write('Terjadi kesalahan:', str(e))
-    else:
-        st.write('Silakan masukkan tanggal mulai dan tanggal akhir.')
-
-def index():
-    return render_template('index.html')
-
+@app.route('/predict', methods=['POST'])
 def predict():
     try:
         data = request.get_json(force=True)
@@ -57,3 +30,6 @@ def predict():
         return jsonify(results)
     except Exception as e:
         return jsonify({'error': str(e)})
+
+if __name__ == "__main__":
+    app.run(host='127.0.0.1', port=5000, debug=True)
