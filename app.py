@@ -1,6 +1,6 @@
 import pandas as pd
 import streamlit as st
-import requests
+import resuests
 import numpy as np
 import pickle
 from datetime import datetime, timedelta
@@ -48,12 +48,14 @@ if st.button('Prediksi'):
         else:
             # Create DataFrame from results
             df = pd.DataFrame(results)
+            df['date'] = pd.to_datetime(df['date'])  # Convert date strings to datetime objects
+            df.set_index('date', inplace=True)  # Set date as index
             
             # Display results as a table
             st.write('Hasil prediksi:')
             st.dataframe(df)  # Menampilkan DataFrame sebagai tabel
             
-            # Optionally, show a line chart as well
-            st.line_chart(df.set_index('date'))
+            # Display results as a line chart
+            st.line_chart(df)
     else:
         st.write('Silakan masukkan tanggal mulai dan tanggal akhir.')
