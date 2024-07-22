@@ -1,21 +1,20 @@
-from flask import Flask, request, jsonify
-import pickle
 import pandas as pd
-from datetime import datetime
-
-app = Flask(__name__)
+import streamlit as st
+import numpy as np
+import pickle
+from datetime import datetime, timedelta
 
 # Load the trained ARIMA model
 with open('model/arima_model.pkl', 'rb') as file:
     model_ARIMA = pickle.load(file)
 
-@app.route('/predict', methods=['POST'])
-def predict():
+st.title('Aplikasi Prediksi')
+
+start_date = st.date_input('Tanggal Mulai', value=None)
+end_date = st.date_input('Tanggal Akhir', value=None)
+
+def predict(start_date, end_date):
     try:
-        data = request.get_json(force=True)
-        start_date = datetime.strptime(data['start_date'], '%Y-%m-%d')
-        end_date = datetime.strptime(data['end_date'], '%Y-%m-%d')
-        
         # Generate date range for prediction
         date_range = pd.date_range(start=start_date, end=end_date, freq='D')
 
@@ -27,9 +26,18 @@ def predict():
 
         # Prepare the results
         results = {'date': date_range.strftime('%Y-%m-%d').tolist(), 'predictions': predictions.tolist()}
-        return jsonify(results)
+        return results
     except Exception as e:
-        return jsonify({'error': str(e)})
+        return {'error': str(e)}
 
-if __name__ == "__main__":
-    app.run(host='127.0.0.1', port=5000, debug=True)
+if st.button('Prediksi'):
+    if start_date and end_date:
+        results = predict(start_date, end_date)
+        if 'error' in results:
+            st.write('Terjadi kesalahan:', results['error'])
+        else:
+            st.write('Hasil prediksi:')
+            df = pd.DataFrame(results)
+            st.line_chart(df.set_index('date'))
+    else:
+        st.write('Silakan masukkan tanggal mulai dan tanggal akhir.')
