@@ -11,7 +11,7 @@ with open('model/arima_model.pkl', 'rb') as file:
 
 # Load historical stock data
 # Gantilah path ini dengan path yang sesuai dengan file data historis Anda
-historical_data_path = 'data/historical_stock_data.csv'
+historical_data_path = 'http://127.0.0.1:5000'
 historical_df = pd.read_csv(historical_data_path)
 historical_df['date'] = pd.to_datetime(historical_df['date'])
 historical_df.set_index('date', inplace=True)
