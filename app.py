@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 with open('model/arima_model.pkl', 'rb') as file:
     model_ARIMA = pickle.load(file)
 
+
 # Input untuk tanggal mulai dan tanggal akhir
 start_date = st.date_input('Tanggal Mulai', value=None)
 end_date = st.date_input('Tanggal Akhir', value=None)
